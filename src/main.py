@@ -28,7 +28,7 @@ def main(use_camera=False, image_path=DEFAULT_IMAGE_PATH):
                print(f"Calibrating: SYS:{sys_cal} , GYRO: {gyro_cal} , ACCL: {accel_cal} MAG: {mag_cal}")
                time.sleep(1)
 
-     quaternion_star, rotation_matrix = star_processing.process_star_image(use_camera=use_camera, visualize=False)
+     quaternion_star, rotation_matrix = star_processing.process_star_image(use_camera=use_camera, visualize=True)
      print(f"Time taken: {time.time() - timer} seconds")
      if quaternion_star is not None and rotation_matrix is not None:
           print("Processing complete!")
@@ -39,21 +39,28 @@ def main(use_camera=False, image_path=DEFAULT_IMAGE_PATH):
 
 #     delta_quaternion = calculate_delta_quaternion( quarterion_star, get_quaternion())
      if use_camera:
-          from quaternion_calculations import quat2dict
-          Q_STAR_REF = quat2dict(quaternion_star)
-          Q_IMU_REF  = get_latest_quaterlion()   
+               useIMU= True
+               useIMGTracking = True
+               if useIMU:
+                    from quaternion_calculations import quat2dict
+                    Q_STAR_REF = quat2dict(quaternion_star)
+                    Q_IMU_REF  = get_latest_quaterlion()   
 
-          publisher = OrientationPublisher(mac_ip=MAC_IP, mac_port=MAC_PORT)
-          while True:
-               Q_IMU_CURR = get_latest_quaterlion()  
-               Q_BODY_CURR = propagate_orientation(Q_STAR_REF, Q_IMU_REF, Q_IMU_CURR)
-               yaw, pitch, roll = quat_to_euler(Q_BODY_CURR)
-               print(
-                    f"Quaternion : {Q_BODY_CURR}   |   "
-                    f"Yaw ψ={yaw:6.1f}°  Pitch θ={pitch:6.1f}°  Roll φ={roll:6.1f}°"
-               )
-               publisher.send_quaternion(Q_BODY_CURR["w"], Q_BODY_CURR["x"], Q_BODY_CURR["y"], Q_BODY_CURR["z"])
-               time.sleep(0.25)
+                    publisher = OrientationPublisher(mac_ip=MAC_IP, mac_port=MAC_PORT)
+                    while True:
+                         Q_IMU_CURR = get_latest_quaterlion()  
+                         Q_BODY_CURR = propagate_orientation(Q_STAR_REF, Q_IMU_REF, Q_IMU_CURR)
+                         yaw, pitch, roll = quat_to_euler(Q_BODY_CURR)
+                         print(
+                              f"Quaternion : {Q_BODY_CURR}   |   "
+                              f"Yaw ψ={yaw:6.1f}°  Pitch θ={pitch:6.1f}°  Roll φ={roll:6.1f}°"
+                         )
+                         publisher.send_quaternion(Q_BODY_CURR["w"], Q_BODY_CURR["x"], Q_BODY_CURR["y"], Q_BODY_CURR["z"])
+                         time.sleep(0.25)
+               if useIMGTracking:
+                    pass
+                    #put your tracking coder= calls here:
+                    #CODE... 
 
 if __name__ == "__main__":
      try:
