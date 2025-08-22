@@ -31,7 +31,8 @@ def train_model(create_new=True, model_name='custom_yolo_186_images'):
         patience=20,
         exist_ok=True
     )
+    
 
 if __name__ == "__main__":
-    train_model(create_new=True)
+    train_model(create_new=False)
     # train_model(create_new=args.new, model_name=args.name)
