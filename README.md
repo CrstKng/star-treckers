@@ -112,3 +112,10 @@ star-treckers/
 
 ## Documentation
 Additional documentation is available at: [Google Drive Documentation](https://drive.google.com/drive/folders/11sBpqvF0sbLGrn1AJVCqiCKHf7mg8zti?usp=sharing)
+
+
+## Motivation
+
+## Quick Start
+
+## Contributing
